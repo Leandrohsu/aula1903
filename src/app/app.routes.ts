@@ -26,6 +26,7 @@ export const routes: Routes = [
         {path: "curso", component: CursosListComponent},
         {path: "curso/new", component: CursosFormComponent},
         {path: "curso/edit/:id", component: CursosFormComponent}
+        
     ]}
 
 ];
