@@ -2,7 +2,8 @@ import { Component, inject } from '@angular/core';
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
 import { Aluno } from '../../../models/aluno';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlunoService } from '../../../services/aluno.service';
 
 @Component({
   selector: 'app-alunos-form',
@@ -13,23 +14,49 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AlunosFormComponent {
   aluno: Aluno = new Aluno();
+
   rotaAtivida = inject(ActivatedRoute);
+  alunoService = inject(AlunoService);
+  roteador = inject(Router);
+
   constructor(){
     let id = this.rotaAtivida.snapshot.params['id'];
     if(id){
-      let aluno1 = new Aluno();
-      aluno1.id = 1;
-      aluno1.nome = 'Joao';
-      aluno1.cpf = '999999999-99';
-      aluno1.telefone = '99999-9999';
-      this.aluno = aluno1;
+      this.findById(id);
     }
   }
+  findById(id: number){
+    this.alunoService.findById(id).subscribe({
+      next: (alunoRetornando) => {
+        this.aluno = alunoRetornando;
+      },
+      error:  (erro) => {
+        alert('Deu Ruim!!!');
+      }
+    })
+  }
   save(){
-    if(this.aluno && this.aluno.id > 0){
-      alert('estou fazendo atualizacao...');
+    if(this.aluno.id > 0){
+      this.alunoService.update(this.aluno,this.aluno.id).subscribe({
+      next: (mensagem) => {
+        alert(mensagem);
+        this.roteador.navigate(['admin/aluno']);
+      },
+      error: (erro) =>{
+        alert('Deu Ruim!!');
+      }
+    });
+
     }else{
-      alert('Salvando');
+      this.alunoService.save(this.aluno).subscribe({
+        next: (mensagem) => {
+          alert(mensagem);
+          this.roteador.navigate(['admin/aluno']);
+        },
+        error: (erro) => {
+          alert('Deu Ruim!');
+        }
+      })
     }
   }
 }

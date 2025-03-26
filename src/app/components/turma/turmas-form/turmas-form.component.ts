@@ -2,7 +2,8 @@ import { Component , inject} from '@angular/core';
 import { Turma } from '../../../models/turma';
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TurmaService } from '../../../services/turma.service';
 
 @Component({
   selector: 'app-turmas-form',
@@ -14,23 +15,47 @@ import { ActivatedRoute } from '@angular/router';
 export class TurmasFormComponent {
  turma: Turma = new Turma();
   rotaAtivida = inject(ActivatedRoute);
+  turmaService = inject(TurmaService);
+  roteador = inject(Router);
+
   constructor(){
     let id = this.rotaAtivida.snapshot.params['id'];
     if(id){
-      let turma1 = new Turma();
-      turma1.id = 1;
-      turma1.nome = 'ADS';
-      turma1.semestre = 2;
-      turma1.ano = 2000;
-      turma1.turno = 'noturno'
-      this.turma = turma1;
+      this.findById(id);
     }
   }
+  findById(id: number){
+    this.turmaService.findById(id).subscribe({
+      next: (turmaRetornando) => {
+        this.turma = turmaRetornando;
+      },
+      error:  (erro) => {
+        alert('Deu Ruim!!!');
+      }
+    })
+  }
   save(){
-    if(this.turma && this.turma.id > 0){
-      alert('estou fazendo atualizacao...');
+    if(this.turma.id > 0){
+      this.turmaService.update(this.turma,this.turma.id).subscribe({
+      next: (mensagem) => {
+        alert(mensagem);
+        this.roteador.navigate(['admin/turma']);
+      },
+      error: (erro) =>{
+        alert('Deu Ruim!!');
+      }
+    });
+
     }else{
-      alert('Salvando');
+      this.turmaService.save(this.turma).subscribe({
+        next: (mensagem) => {
+          alert(mensagem);
+          this.roteador.navigate(['admin/turma']);
+        },
+        error: (erro) => {
+          alert('Deu Ruim!');
+        }
+      })
     }
   }
 

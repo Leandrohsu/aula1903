@@ -3,7 +3,8 @@ import { Component, inject } from '@angular/core';
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
 import { Professor } from '../../../models/professor';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProfessorService } from '../../../services/professor.service';
 
 
 @Component({
@@ -14,25 +15,51 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './professores-form.component.scss'
 })
 export class ProfessoresFormComponent {
+
 professor: Professor = new Professor();
   rotaAtivida = inject(ActivatedRoute);
+  roteador = inject(Router);
+  professorService = inject(ProfessorService);
+
   constructor(){
     let id = this.rotaAtivida.snapshot.params['id'];
     if(id){
-      let professor1 = new Professor();
-      professor1.id = 1;
-      professor1.nome = 'Joao';
-      professor1.cpf = '999999999-99';
-      professor1.email = 'joao@joao.com.br';
-      professor1.especialidade = 'Cyberseguranca'
-      this.professor = professor1;
+      this.findById (id);
     }
+  }
+  findById(id: number){
+    this.professorService.findById(id).subscribe({
+      next: (professorRetornando) => {
+        this.professor = professorRetornando;
+      },
+      error:  (erro) => {
+        alert('Deu Ruim!!!');
+      }
+    })
   }
   save(){
-    if(this.professor && this.professor.id > 0){
-      alert('estou fazendo atualizacao...');
+    if(this.professor.id > 0){
+      this.professorService.update(this.professor,this.professor.id).subscribe({
+      next: (mensagem) => {
+        alert(mensagem);
+        this.roteador.navigate(['admin/professor']);
+      },
+      error: (erro) =>{
+        alert('Deu Ruim!!');
+      }
+    });
+
     }else{
-      alert('Salvando');
+      this.professorService.save(this.professor).subscribe({
+        next: (mensagem) => {
+          alert(mensagem);
+          this.roteador.navigate(['admin/professor']);
+        },
+        error: (erro) => {
+          alert('Deu Ruim!');
+        }
+      })
     }
   }
+ 
 }

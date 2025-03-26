@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Turma } from '../../../models/turma';
+import { TurmaService } from '../../../services/turma.service';
 
 @Component({
   selector: 'app-turmas-list',
@@ -10,41 +11,39 @@ import { Turma } from '../../../models/turma';
 })
 export class TurmasListComponent {
   lista: Turma[] = [];
+
+  turmaService = inject(TurmaService);
   
     constructor(){
       this.findAll();
       
     }
     findAll(){
-      let turma1 = new Turma();
-      turma1.id = 1;
-      turma1.nome = 'ADS';
-      turma1.semestre = 2;
-      turma1.ano = 2000;
-      turma1.turno = 'noturno';
-  
-      let turma2 = new Turma();
-      turma2.id = 2;
-      turma2.nome = 'ADM';
-      turma2.semestre = 1;
-      turma2.ano = 2020;
-      turma2.turno = 'noturno';
-  
-      let turma3 = new Turma();
-      turma3.id = 3;
-      turma3.nome = 'DIREITO';
-      turma3.semestre = 5;
-      turma3.ano = 2025;
-      turma3.turno = 'noturno';
+          this.turmaService.findAll().subscribe({
+            next: (listaRetornada) => {
+              this.lista = listaRetornada;
+            },
+            error: (erro) => {
+              alert('Deu erro!');
+            }
+          });
+        }
       
-      this.lista.push(turma1,turma2,turma3);
+        delete(turma: Turma){
+            if(confirm('Deseja deletar isso aí?')){
+        
+              this.turmaService.deleteById(turma.id).subscribe({
+                next: (mensagem) => {
+                  alert(mensagem);
+                  this.findAll();
+                },
+                error: (erro) => {
+                  alert('Deu erro!');
+                }
+              });
+        
+            }
+          }
     }
   
-    delete(turma: Turma){
-      let indice = this.lista.findIndex(x => {return x.id == turma.id});
-      if(confirm('Deseja deletar?')){
-        this.lista.splice(indice, 1);
-      }
-    }
 
-}
