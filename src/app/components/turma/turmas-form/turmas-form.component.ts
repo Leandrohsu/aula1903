@@ -13,49 +13,57 @@ import { TurmaService } from '../../../services/turma.service';
   styleUrl: './turmas-form.component.scss'
 })
 export class TurmasFormComponent {
- turma: Turma = new Turma();
+  turma: Turma = new Turma();
+    
   rotaAtivida = inject(ActivatedRoute);
-  turmaService = inject(TurmaService);
   roteador = inject(Router);
+  turmaService = inject(TurmaService);
 
   constructor(){
     let id = this.rotaAtivida.snapshot.params['id'];
-    if(id){
-      this.findById(id);
-    }
+      if(id){
+        this.findById(id);
+      }
   }
   findById(id: number){
+
     this.turmaService.findById(id).subscribe({
-      next: (turmaRetornando) => {
-        this.turma = turmaRetornando;
+      next: (turmaRetorno) => {
+        this.turma = turmaRetorno;
       },
-      error:  (erro) => {
-        alert('Deu Ruim!!!');
-      }
-    })
-  }
-  save(){
-    if(this.turma.id > 0){
-      this.turmaService.update(this.turma,this.turma.id).subscribe({
-      next: (mensagem) => {
-        alert(mensagem);
-        this.roteador.navigate(['admin/turma']);
-      },
-      error: (erro) =>{
-        alert('Deu Ruim!!');
+      error: (erro) => {
+        alert('Deu erro!');
       }
     });
-
+  
+  }
+  
+  save(){
+    if(this.turma.id > 0){
+      this.turmaService.update(this.turma, this.turma.id).subscribe({
+        next: (mensagem) => {
+          alert(mensagem);
+          this.roteador.navigate(['admin/turma']);
+        },
+        error: (erro) => {
+          alert('Deu erro!');
+        }
+      });
+  
+  
     }else{
+      // SAVE
       this.turmaService.save(this.turma).subscribe({
         next: (mensagem) => {
           alert(mensagem);
           this.roteador.navigate(['admin/turma']);
         },
         error: (erro) => {
-          alert('Deu Ruim!');
+          alert('Deu erro!');
         }
-      })
+      });
+  
+  
     }
   }
 

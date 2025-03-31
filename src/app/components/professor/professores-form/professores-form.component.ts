@@ -17,49 +17,57 @@ import { ProfessorService } from '../../../services/professor.service';
 export class ProfessoresFormComponent {
 
 professor: Professor = new Professor();
-  rotaAtivida = inject(ActivatedRoute);
-  roteador = inject(Router);
-  professorService = inject(ProfessorService);
+   
+rotaAtivida = inject(ActivatedRoute);
+roteador = inject(Router);
+professorService = inject(ProfessorService);
+constructor(){
+let id = this.rotaAtivida.snapshot.params['id'];
+ if(id){
+   this.findById(id);
+ }
+}
 
-  constructor(){
-    let id = this.rotaAtivida.snapshot.params['id'];
-    if(id){
-      this.findById (id);
-    }
-  }
-  findById(id: number){
-    this.professorService.findById(id).subscribe({
-      next: (professorRetornando) => {
-        this.professor = professorRetornando;
-      },
-      error:  (erro) => {
-        alert('Deu Ruim!!!');
-      }
-    })
-  }
-  save(){
-    if(this.professor.id > 0){
-      this.professorService.update(this.professor,this.professor.id).subscribe({
-      next: (mensagem) => {
-        alert(mensagem);
-        this.roteador.navigate(['admin/professor']);
-      },
-      error: (erro) =>{
-        alert('Deu Ruim!!');
-      }
-    });
+findById(id: number){
 
-    }else{
-      this.professorService.save(this.professor).subscribe({
-        next: (mensagem) => {
-          alert(mensagem);
-          this.roteador.navigate(['admin/professor']);
-        },
-        error: (erro) => {
-          alert('Deu Ruim!');
-        }
-      })
-    }
-  }
- 
+this.professorService.findById(id).subscribe({
+next: (professorRetorno) => {
+ this.professor = professorRetorno;
+},
+error: (erro) => {
+ alert('Deu erro!');
+}
+});
+
+}
+
+save(){
+if(this.professor.id > 0){
+// UPDATE
+this.professorService.update(this.professor, this.professor.id).subscribe({
+ next: (mensagem) => {
+   alert(mensagem);
+   this.roteador.navigate(['admin/professor']);
+ },
+ error: (erro) => {
+   alert('Deu erro!');
+ }
+});
+
+
+}else{
+// SAVE
+this.professorService.save(this.professor).subscribe({
+ next: (mensagem) => {
+   alert(mensagem);
+   this.roteador.navigate(['admin/professor']);
+ },
+ error: (erro) => {
+   alert('Deu erro!');
+ }
+});
+
+
+}
+}
 }

@@ -13,50 +13,60 @@ import { CursoService } from '../../../services/curso.service';
   styleUrl: './cursos-form.component.scss'
 })
 export class CursosFormComponent {
+
   curso: Curso = new Curso();
-    rotaAtivida = inject(ActivatedRoute);
-    roteador = inject(Router);
-    cursoService = inject(CursoService);
-    constructor(){
-      let id = this.rotaAtivida.snapshot.params['id'];
-      if(id){
-        this.findById(id);
+  
+  rotaAtivida = inject(ActivatedRoute);
+  roteador = inject(Router);
+  cursoService = inject(CursoService);
+
+  constructor(){
+    let id = this.rotaAtivida.snapshot.params['id'];
+    if(id){
+      this.findById(id);
+    }
+  }
+  findById(id: number){
+
+    this.cursoService.findById(id).subscribe({
+      next: (cursoRetorno) => {
+        this.curso = cursoRetorno;
+      },
+      error: (erro) => {
+        alert('Deu erro!');
       }
-    }
-    findById(id: number){
-      this.cursoService.findById(id).subscribe({
-        next: (cursoRetornando) => {
-          this.curso = cursoRetornando;
-        },
-        error:  (erro) => {
-          alert('Deu Ruim!!!');
-        }
-      })
-    }
-    save(){
-      if(this.curso.id > 0){
-        this.cursoService.update(this.curso,this.curso.id).subscribe({
+    });
+
+  }
+
+  save(){
+    if(this.curso.id > 0){
+      // UPDATE
+      this.cursoService.update(this.curso, this.curso.id).subscribe({
         next: (mensagem) => {
           alert(mensagem);
           this.roteador.navigate(['admin/curso']);
         },
-        error: (erro) =>{
-          alert('Deu Ruim!!');
+        error: (erro) => {
+          alert('Deu erro!');
         }
       });
-  
-      }else{
-        this.cursoService.save(this.curso).subscribe({
-          next: (mensagem) => {
-            alert(mensagem);
-            this.roteador.navigate(['admin/curso']);
-          },
-          error: (erro) => {
-            alert('Deu Ruim!');
-          }
-        })
-      }
+
+
+    }else{
+      // SAVE
+      this.cursoService.save(this.curso).subscribe({
+        next: (mensagem) => {
+          alert(mensagem);
+          this.roteador.navigate(['admin/curso']);
+        },
+        error: (erro) => {
+          alert('Deu erro!');
+        }
+      });
+
+
     }
-   
+  }
 
 }

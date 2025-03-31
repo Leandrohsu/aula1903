@@ -12,38 +12,55 @@ import { TurmaService } from '../../../services/turma.service';
 export class TurmasListComponent {
   lista: Turma[] = [];
 
-  turmaService = inject(TurmaService);
+  @Input("modoModal") modoModal: boolean = false;
+  @Output("meuEvento") meuEvento = new EventEmitter();
   
-    constructor(){
-      this.findAll();
-      
-    }
-    findAll(){
-          this.turmaService.findAll().subscribe({
-            next: (listaRetornada) => {
-              this.lista = listaRetornada;
-            },
-            error: (erro) => {
-              alert('Deu erro!');
+    turmaService = inject(TurmaService);
+            constructor(){
+              this.findAll();
             }
-          });
-        }
-      
-        delete(turma: Turma){
-            if(confirm('Deseja deletar isso aí?')){
-        
-              this.turmaService.deleteById(turma.id).subscribe({
-                next: (mensagem) => {
-                  alert(mensagem);
-                  this.findAll();
+            findAll(){
+   
+              this.turmaService.findAll().subscribe({
+                next: (listaRetornada) => {
+                  this.lista = listaRetornada;
                 },
                 error: (erro) => {
-                  alert('Deu erro!');
+                  Swal.fire(erro.error, '', 'error');
                 }
               });
-        
+            
             }
-          }
+          
+            delete(turma: Turma){
+          
+              Swal.fire({
+                title: 'Deseja mesmo deleatr?',
+                showCancelButton: true,
+                confirmButtonText: 'Sim',
+                cancelButtonText: `Cancelar`,
+              }).then((result) => {
+                if (result.isConfirmed) {
+          
+                  this.turmaService.deleteById(turma.id).subscribe({
+                    next: (mensagem) => {
+                      Swal.fire(mensagem, '', 'success');
+                      this.findAll();
+                    },
+                    error: (erro) => {
+                      Swal.fire(erro.error, '', 'error');
+                    }
+                  });
+                  
+                }
+              });
+          
+            }
+          
+          
+            selecionar(turma: Turma){
+              this.meuEvento.emit(turma); //esse disparo vai acionar o método do FORM
+            }
     }
   
 

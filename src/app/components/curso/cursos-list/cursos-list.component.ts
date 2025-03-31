@@ -10,40 +10,41 @@ import { CursoService } from '../../../services/curso.service';
   styleUrl: './cursos-list.component.scss'
 })
 export class CursosListComponent {
-  lista: Curso[] = [];
-  cursoService = inject(CursoService);
 
+  lista: Curso[] = [];
   
-    constructor(){
-      this.findAll();
-      
+  cursoService = inject(CursoService);
+        constructor(){
+          this.findAll();
+        }
+
+
+findAll(){
+  this.cursoService.findAll().subscribe({
+    next: (listaRetornada) => {
+      this.lista = listaRetornada;
+    },
+    error: (erro) => {
+      alert('Deu erro!');
     }
-   
-    findAll(){
-              this.cursoService.findAll().subscribe({
-                next: (listaRetornada) => {
-                  this.lista = listaRetornada;
-                },
-                error: (erro) => {
-                  alert('Deu erro!');
-                }
-              });
-            }
-          
-            delete(curso: Curso){
-                if(confirm('Deseja deletar isso aí?')){
-            
-                  this.cursoService.deleteById(curso.id).subscribe({
-                    next: (mensagem) => {
-                      alert(mensagem);
-                      this.findAll();
-                    },
-                    error: (erro) => {
-                      alert('Deu erro!');
-                    }
-                  });
-            
-                }
-              }
+  });
+
+}
+
+delete(curso: Curso){
+  let indice = this.lista.findIndex(x => {return x.id == curso.id});
+  if(confirm('Deseja deletar?')){
+    this.cursoService.deleteById(curso.id).subscribe({
+      next: (mensagem) => {
+        alert(mensagem);
+        this.findAll();
+      },
+      error: (erro) => {
+        alert('Deu erro!');
+      }
+    });
+  }
+}
+
 
 }
