@@ -1,8 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { Aluno } from '../../../models/aluno';
 import { AlunoService } from '../../../services/aluno.service';
 import Swal from 'sweetalert2';
-import { MdbModalModule, MdbModalRef, MdbModalService } from '../alunos-form/alunos-form.component';
+import { MdbModalRef } from 'mdb-angular-ui-kit/modal';
+import { MdbModalService } from 'mdb-angular-ui-kit/modal';
+
 
 @Component({
   selector: 'app-alunos-list',

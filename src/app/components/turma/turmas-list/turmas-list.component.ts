@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Turma } from '../../../models/turma';
 import { TurmaService } from '../../../services/turma.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-turmas-list',

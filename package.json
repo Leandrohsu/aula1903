@@ -24,11 +24,12 @@
     "chart.js": "^3.1.1",
     "mdb-angular-ui-kit": "^7.1.0",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.6.13",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.2.15",
+    "@angular-devkit/build-angular": "18.2.15",
     "@angular/cli": "^18.2.15",
     "@angular/compiler-cli": "^18.2.0",
     "@types/jasmine": "~5.1.0",

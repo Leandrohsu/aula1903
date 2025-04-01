@@ -1,24 +1,23 @@
-import { Component, inject } from '@angular/core';
-import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
+import { Component, EventEmitter, inject, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { Aluno } from '../../../models/aluno';
+import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlunoService } from '../../../services/aluno.service';
 import { Turma } from '../../../models/turma';
-import { MdbModalModule , MdbModalRef, MdbModalService } from 'mdb-angular-ui-kit';
+import { MdbModalModule, MdbModalRef, MdbModalService } from 'mdb-angular-ui-kit/modal';
 import { TurmaService } from '../../../services/turma.service';
-import Swal from 'sweetalert2';
 import { TurmasListComponent } from '../../turma/turmas-list/turmas-list.component';
-
+import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-alunos-form',
+  selector: 'app-aluno-form',
   standalone: true,
-  imports: [MdbFormsModule, FormsModule, MdbModalModule, TurmasListComponent],
+  imports: [MdbModalModule, MdbFormsModule, FormsModule,TurmasListComponent],
   templateUrl: './alunos-form.component.html',
   styleUrl: './alunos-form.component.scss'
 })
-export class AlunosFormComponent {
+export class AlunoFormComponent {
 
   @Input("aluno") aluno: Aluno = new Aluno();
   @Output("meuEvento") meuEvento = new EventEmitter(); //ELE VAI PEGAR QUALQUER COISA E EMITIR
@@ -110,5 +109,4 @@ export class AlunosFormComponent {
   buscarTurma(){
     this.modalRef = this.modalService.open(this.modalTurmasList, {modalClass: 'modal-xl'});
   }
-
 }
